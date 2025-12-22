@@ -38,6 +38,11 @@ class Board extends Model
         return $this->hasMany(Sensor::class);
     }
 
+    public function apikeys()
+    {
+        return $this->has(Apikey::class);
+    }
+
     // Helper para saber se está online (considerando 3x o intervalo de envio como margem)
     public function isOnline()
     {
