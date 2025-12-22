@@ -16,18 +16,6 @@ class Board extends Model
         'battery_level' => 'integer',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        // Antes de criar, gera a API KEY se não existir
-        static::creating(function ($board) {
-            if (empty($board->api_key)) {
-                $board->api_key = Str::random(64);
-            }
-        });
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -40,7 +28,7 @@ class Board extends Model
 
     public function apikeys()
     {
-        return $this->has(Apikey::class);
+        return $this->hasOne(Apikey::class);
     }
 
     // Helper para saber se está online (considerando 3x o intervalo de envio como margem)

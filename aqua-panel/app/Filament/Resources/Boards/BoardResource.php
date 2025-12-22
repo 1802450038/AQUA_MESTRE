@@ -45,6 +45,7 @@ class BoardResource extends Resource
     {
         return [
             RelationManagers\SensorsRelationManager::class,
+            RelationManagers\ApikeysRelationManager::class,
         ];
     }
 

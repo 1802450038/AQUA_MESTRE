@@ -21,8 +21,6 @@ class BoardInfolist
                 TextEntry::make('ip_address')
                     ->label('Endereço IP')
                     ->placeholder('xxx.xxx.xxx.xxx'),
-                TextEntry::make('api_key')
-                    ->label('Chave de API'),
                 TextEntry::make('location')
                     ->label('Localização')
                     ->placeholder('Nome do local...'),

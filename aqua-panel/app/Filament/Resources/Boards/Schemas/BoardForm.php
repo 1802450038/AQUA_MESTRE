@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Boards\Schemas;
 
+use Dom\Text;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -14,8 +16,7 @@ class BoardForm
     {
         return $schema
             ->components([
-                Select::make('user_id')
-                    ->relationship('user', 'name')
+                Hidden::make('user_id')
                     ->default(auth()->id())
                     ->required(),
                 TextInput::make('name')
@@ -24,10 +25,6 @@ class BoardForm
                 TextInput::make('uid')
                     ->name('UID')
                     ->required(),
-                // TextInput::make('api_key')
-                //     ->name('API Key')
-                //     ->required(),
-
                 TextInput::make('location')
                     ->name('Localização'),
                 TextInput::make('data_interval')

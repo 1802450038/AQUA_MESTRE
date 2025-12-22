@@ -54,13 +54,13 @@ class SensorsRelationManager extends RelationManager
                     ->label('Analogico ?')
                     ->required(),
                 TextInput::make('calibration_data')
-                ->label('Dados de calibração (JSON)')
+                    ->label('Dados de calibração (JSON)')
                     ->placeholder('{"offset":0,"scale":1}'),
                 Toggle::make('is_active')
                     ->label('Ativo ?')
                     ->required(),
                 TextInput::make('unit')
-                ->label('Unidade')
+                    ->label('Unidade')
                     ->placeholder('°C, pH, NTU...'),
                 TextInput::make('min_value')
                     ->label('Valor mínimo')
@@ -168,9 +168,9 @@ class SensorsRelationManager extends RelationManager
                 CreateAction::make(),
                 // AssociateAction::make(),
             ])
-                        ->recordActions([
+            ->recordActions([
                 \Filament\Actions\ViewAction::make()
-                    ->url(fn (\App\Models\Sensor $record): string => \App\Filament\Resources\Sensors\SensorResource::getUrl('view', ['record' => $record])),
+                    ->url(fn(\App\Models\Sensor $record): string => \App\Filament\Resources\Sensors\SensorResource::getUrl('view', ['record' => $record])),
                 \Filament\Actions\EditAction::make(),
                 \Filament\Actions\DissociateAction::make(),
                 \Filament\Actions\DeleteAction::make(),
