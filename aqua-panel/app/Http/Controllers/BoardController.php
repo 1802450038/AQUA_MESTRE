@@ -63,7 +63,9 @@ class BoardController extends Controller
     "wifi_password":"Senha do wifi",
     "battery_level": "40",
     "last_error": "Erro 32",
-    "signal_strength": "-24"
+    "signal_strength": "-24",
+    "firmware_version" : "v1.0.3",
+    "hardware_version" : "v1.0.0"
     }
     */
     public function updateBoardValues(Request $request)
@@ -89,5 +91,83 @@ class BoardController extends Controller
         $board->save();
 
         return response()->json(['message' => 'Valores da placa atualizados com sucesso.']);
+    }
+
+
+    public function getBoardValues(Request $request)
+    {
+        $apiKey = $request->input('api_key');
+        $board = $this->getBoardByApiKey($apiKey)->original['board'];
+
+
+        if (!$board) {
+
+            return response()->json(['error' => 'Placa não encontrada.'], 404);
+        }
+
+        $boardReturnValues = [
+            'wifi_ssid' => $board->wifi_ssid,
+            'wifi_password' => $board->wifi_password,
+            'data_interval' => $board->data_interval,
+            'ota_enabled' => $board->ota_enabled,
+            'firmware_file_path' => $board->firmware_file_path,
+        ];
+
+        return response()->json(['board_values' => $boardReturnValues]);
+    }
+
+    public function getBoardSensors(Request $request)
+    {
+        $apiKey = $request->input('api_key');
+        $board = $this->getBoardByApiKey($apiKey)->original['board'];
+
+        if (!$board) {
+            return response()->json(['error' => 'Placa não encontrada.'], 404);
+        }
+
+        $sensors = $board->sensors; // Supondo que você tenha uma relação 'sensors' definida no modelo Board
+
+        return response()->json(['sensors' => $sensors]);
+    }
+
+
+    /* Atualiza o valor de um sensor específico da placa.
+    Payload esperado body (exemplo):
+    {
+    "api_key": "01e0423be215ad9942f3ca91b64e6cac3d5b6474e6b545cded4c4c8f36ea67a6",
+    "sensor_id" : "1",
+    "is_active" : "true",
+    "last_error" : "Erro 0",
+    "reading" : "3"
+    }
+    */
+    public function updateSensorValue(Request $request)
+    {
+        $apiKey = $request->input('api_key');
+        $sensorId = $request->input('sensor_id');
+
+        $board = $this->getBoardByApiKey($apiKey)->original['board'];
+        if (!$board) {
+            return response()->json(['error' => 'Placa não encontrada.'], 404);
+        }
+
+        $sensor = $board->sensors->where('id', $sensorId)->first();
+        if (!$sensor) {
+            return response()->json(['error' => 'Sensor não encontrado.'], 404);
+        }
+
+        $sensor->is_active = $request->input('is_active', $sensor->is_active);
+        $sensor->last_error = $request->input('last_error', $sensor->last_error);
+        $sensor->last_read_at = now();
+        $sensor->save();
+
+        if ($request->has('reading')) {
+            $sensor->measurements()->create([
+                'value' => $request->input('reading'),
+            ]);
+        }
+
+
+        return response()->json(['message' => 'Valor do sensor atualizado com sucesso.']);
     }
 }

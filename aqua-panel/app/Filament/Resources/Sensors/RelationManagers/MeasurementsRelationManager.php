@@ -39,11 +39,14 @@ class MeasurementsRelationManager extends RelationManager
         return $schema
             ->components([
                 TextEntry::make('value')
+                    ->label('Valor')
                     ->numeric(),
                 TextEntry::make('created_at')
+                    ->label('Criado em')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
+                    ->label('Atualizado em')
                     ->dateTime()
                     ->placeholder('-'),
             ]);
@@ -53,15 +56,19 @@ class MeasurementsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('id')
+            ->poll('5s')
             ->columns([
                 TextColumn::make('value')
+                    ->label('Valor')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Registrado em')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                    // ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Atualizado em')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -69,6 +76,7 @@ class MeasurementsRelationManager extends RelationManager
             ->filters([
                 //
             ])
+            ->defaultSort('created_at', 'desc')
             ->headerActions([
                 CreateAction::make(),
                 AssociateAction::make(),

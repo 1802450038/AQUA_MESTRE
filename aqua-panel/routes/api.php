@@ -18,6 +18,8 @@ Route::prefix('board')->group(function () {
             'status' => 200
         ]);
     });
+
+    // HandShake, execute once on board startup
     // localhost:8000/api/board/check-api-key
     Route::post('/check-api-key', [BoardController::class, 'checkApiKey']);
 
@@ -27,8 +29,11 @@ Route::prefix('board')->group(function () {
     // localhost:8000/api/board/get-board-values
     Route::get('get-board-values', [BoardController::class, 'getBoardValues']);
 
-    
+    // localhost:8000/api/board/get-board-sensors
+    Route::get('get-board-sensors', [BoardController::class, 'getBoardSensors']);
 
+    // localhost:8000/api/board/update-sensor-value
+    Route::post('update-sensor-value', [BoardController::class, 'updateSensorValue']);
 
     // localhost:8000/api/board/update-board-info?board_id={board_id}&api_key={api_key}
     Route::post('update-board-info?board_id={board_id}&api_key={api_key}', [BoardController::class, 'updateBoardInfo']);

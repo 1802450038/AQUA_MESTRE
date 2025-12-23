@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('name'); // Ex: Temperatura Ambiente
             $table->string('type'); // Ex: 'temp', 'ph', 'turbidity', 'relay'
             $table->string('model')->nullable(); // Ex: DS18B20, DHT22
-            $table->integer('port_number'); // 1 a 6
-            $table->boolean('is_analog')->default(false);
+            $table->integer('port_number'); // 1 a 6 -> S -> B
+            $table->boolean('is_analog')->default(false); // S -> B
             $table->json('calibration_data')->nullable(); // Para calibrar pH ou Turbidez
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(true); // B -> S
             $table->string('unit')->nullable(); // Ex: °C, pH, NTU
             $table->float('min_value')->nullable(); // Valor mínimo esperado
             $table->float('max_value')->nullable(); // Valor máximo esperado

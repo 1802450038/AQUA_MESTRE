@@ -14,76 +14,90 @@ class SensorMeasurementsChart extends ChartWidget
 
     public ?Sensor $record = null;
 
-    protected ?string $pollingInterval = '1s';
+    protected ?string $pollingInterval = '5s';
+
+    protected int | string | array $columnSpan = 'full';
 
 
     protected function getData(): array
     {
         if (!$this->record) {
-            return [
-                'datasets' => [],
-                'labels' => [],
-            ];
+            return ['datasets' => [], 'labels' => []];
         }
 
         $filter = $this->filter;
-        $now = Carbon::now();
         $query = Measurement::where('sensor_id', $this->record->id);
 
-        $dateUnit = 'day';
+        // Variável para controlar se devemos agrupar ou não
+        $isRawData = false;
 
         switch ($filter) {
+            case 'hour':
+                // Pega dados da última hora (ex: das 14:00 às 14:59 se agora for 14:30)
+                // Ou se preferir "últimos 60 minutos": Carbon::now()->subHour()
+                $query->where('created_at', '>=', Carbon::now()->subHour());
+                $isRawData = true; // Exibir cada ponto individualmente
+                break;
+
             case 'today':
-                $query->whereDate('created_at', $now->toDateString());
-                $dateUnit = 'hour';
+                $query->whereDate('created_at', Carbon::today());
+                $isRawData = true; // Exibir cada ponto individualmente
                 break;
+
             case 'week':
-                $query->whereBetween('created_at', [$now->startOfWeek(), $now->endOfWeek()]);
-                $dateUnit = 'day';
+                $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+                $dateFormat = 'd/m - H:00'; // Agrupa por hora
                 break;
+
             case 'month':
-                $query->whereBetween('created_at', [$now->startOfMonth(), $now->endOfMonth()]);
-                $dateUnit = 'day';
+                $query->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
+                $dateFormat = 'd/m'; // Agrupa por dia
                 break;
+
             case 'year':
             default:
-                $query->whereYear('created_at', $now->year);
-                $dateUnit = 'month';
+                $query->whereYear('created_at', Carbon::now()->year);
+                $dateFormat = 'm/Y'; // Agrupa por mês
                 break;
         }
 
-        $data = $query->orderBy('created_at', 'asc')
-            ->get()
-            ->groupBy(function ($item) use ($dateUnit) {
-                return Carbon::parse($item->created_at)->format($dateUnit === 'hour' ? 'Y-m-d H' : ($dateUnit === 'day' ? 'Y-m-d' : 'Y-m'));
-            })
-            ->map(function ($group) {
-                return $group->avg('value');
+        // Recupera os dados ordenados
+        $measurements = $query->orderBy('created_at', 'asc')->get();
+
+        if ($isRawData) {
+            // LÓGICA SEM AGRUPAMENTO (Ponto a Ponto)
+            // Ideal para "Hora" e "Hoje"
+            $labels = $measurements->map(fn($item) => $item->created_at->format('H:i:s'))->all();
+            $values = $measurements->pluck('value')->all();
+        } else {
+            // LÓGICA COM AGRUPAMENTO (Média)
+            // Necessário para períodos longos (Mês/Ano) para não travar o navegador com milhares de pontos
+            $grouped = $measurements->groupBy(function ($item) use ($dateFormat) {
+                return Carbon::parse($item->created_at)->format($dateFormat);
             });
 
-
-        if ($data->isEmpty()) {
-            return [
-                'datasets' => [],
-                'labels' => [],
-            ];
+            $labels = $grouped->keys()->all();
+            $values = $grouped->map(fn($group) => round($group->avg('value'), 2))->values()->all();
         }
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Valor da leitura',
-                    'data' => $data->values()->all(),
-                    'fill' => 'start',
+                    'label' => 'Valor da Leitura',
+                    'data' => $values,
+                    'fill' => true,
+                    'borderColor' => '#4ade80',
+                    'pointRadius' => 3, // Aumentei um pouco o ponto para ficar visível cada leitura
                 ],
             ],
-            'labels' => $data->keys()->all(),
+            'labels' => $labels,
         ];
     }
 
     protected function getFilters(): ?array
     {
         return [
+            'hour' => 'Última Hora',
             'today' => 'Hoje',
             'week' => 'Semana',
             'month' => 'Mês',
@@ -100,7 +114,7 @@ class SensorMeasurementsChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'line';
     }
 
     protected function getOptions(): RawJs
