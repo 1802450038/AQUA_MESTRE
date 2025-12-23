@@ -81,11 +81,11 @@ class ApiKeysRelationManager extends RelationManager
                     ->searchable(),
                 ToggleColumn::make('is_active')
                     ->label("Ativo"),
-                TextColumn::make('user_id')
+                TextColumn::make('user.name')
                     ->label("Dono da chave")
                     ->placeholder('xxx')
                     ->searchable(),
-                TextColumn::make('board_id')
+                TextColumn::make('board.name')
                     ->label("Placa")
                     ->placeholder('xxx')
                     ->searchable(),
@@ -107,12 +107,12 @@ class ApiKeysRelationManager extends RelationManager
             ])
             ->recordActions([
                 \Filament\Actions\EditAction::make(),
-                \Filament\Actions\DissociateAction::make(),
+                // \Filament\Actions\DissociateAction::make(),
                 \Filament\Actions\DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
+                    // DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ]);
