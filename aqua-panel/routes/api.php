@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::prefix('board')->group(function () {
+Route::prefix('boards')->group(function () {
 
     // localhost:8000/api/board/serverStatus 
     Route::get('/serverStatus', function () {
