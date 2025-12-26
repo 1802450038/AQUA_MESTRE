@@ -38,9 +38,21 @@ class SensorsRelationManager extends RelationManager
                     ->label('Nome')
                     ->placeholder('Relé...')
                     ->required(),
-                TextInput::make('type')
+                Select::make('type')
                     ->label('Tipo')
-                    ->placeholder('Solido, mecânico...')
+                    ->options([
+                        'relay' => 'Relé',
+                        'ph' => 'PH',
+                        'turbity' => 'Turbidez',
+                        'temperature' => 'Temperatura',
+                        'humidity' => 'UmidadeDigital',
+                        'soil_moisture' => 'Umidade do Solo',
+                        'light' => 'Luminosidade',
+                        'water_level' => 'Nível da Água',
+                        'other' => 'Outro',
+                    ])
+                    ->label('Tipo')
+                    ->placeholder('Selecione...')
                     ->required(),
                 TextInput::make('model')
                     ->label('Modelo')
@@ -134,6 +146,9 @@ class SensorsRelationManager extends RelationManager
                 TextColumn::make('name')
                     ->label("Nome")
                     ->searchable(),
+                TextColumn::make('lastMeasurement.value')
+                    ->label("Última leitura")
+                    ->sortable(),
                 TextColumn::make('type')
                     ->label("Tipo")
                     ->searchable(),

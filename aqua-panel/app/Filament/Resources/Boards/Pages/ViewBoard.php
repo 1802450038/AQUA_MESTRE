@@ -38,8 +38,8 @@ class ViewBoard extends ViewRecord
                                 'is_analog' => $sensor->is_analog,
                                 'unit' => $sensor->unit,
                                 'min_value' => $sensor->min_value,
-                                'max_value' => $sensor->max_value
-                                // Adicione outros campos do sensor aqui
+                                'max_value' => $sensor->max_value,
+                                'reading' => '', // Campo para leitura atual (vazio por enquanto)
                             ]
                         ];
                     });
@@ -49,7 +49,7 @@ class ViewBoard extends ViewRecord
 
                     // 3. Monta o array final
                     $dados = [
-                        'id' => $record->id, // Ou use $record->uid se baseando na sua imagem
+                        'id' => $record->id,
                         'name' => $record->name,
                         'api_key' => $apiKey,
                         'location' => $record->location, 

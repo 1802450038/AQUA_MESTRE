@@ -130,6 +130,74 @@ class BoardController extends Controller
         return response()->json(['sensors' => $sensors]);
     }
 
+    /* Atualiza os valores de múltiplos sensores da placa.
+    Payload esperado body (exemplo
+    {
+    "id": 1,
+    "name": "TESTE ABCD",
+    "api_key": "01e0423be215ad9942f3ca91b64e6cac3d5b6474e6b545cded4c4c8f36ea67a6",
+    "location": "Granja",
+    "sensores": {
+        "PH": {
+            "id": 1,
+            "type": "ph",
+            "port_number": 1,
+            "is_analog": true,
+            "unit": "pH",
+            "min_value": 1,
+            "max_value": 14,
+            "reading": ""
+        },
+        "Temeperatura": {
+            "id": 2,
+            "type": "temperature",
+            "port_number": 3,
+            "is_analog": true,
+            "unit": "C",
+            "min_value": 0,
+            "max_value": 90,
+            "reading": ""
+        },
+        "Rele": {
+            "id": 3,
+            "type": "relay",
+            "port_number": 4,
+            "is_analog": false,
+            "unit": "Boolean",
+            "min_value": 0,
+            "max_value": 1,
+            "reading": ""
+        }
+    }
+}
+    */
+    public function updateSensorsValues(Request $request)
+    {
+        $apiKey = $request->input('api_key');
+        $sensorsData = $request->input('sensores');
+
+        $board = $this->getBoardByApiKey($apiKey)->original['board'];
+        if (!$board) {
+            return response()->json(['error' => 'Placa não encontrada.'], 404);
+        }
+
+        foreach ($sensorsData as $sensorInfo) {
+            $sensor = $board->sensors->where('id', $sensorInfo['id'])->first();
+            if ($sensor) {
+                $sensor->last_read_at = now();
+                $sensor->save();
+
+                if (isset($sensorInfo['reading'])) {
+                    $sensor->measurements()->create([
+                        'value' => $sensorInfo['reading'],
+                    ]);
+                }
+            }
+        }
+
+        return response()->json(['message' => 'Valores dos sensores atualizados com sucesso.']);
+    }
+
 
     /* Atualiza o valor de um sensor específico da placa.
     Payload esperado body (exemplo):
