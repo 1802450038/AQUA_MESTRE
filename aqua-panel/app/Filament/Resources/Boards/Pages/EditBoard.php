@@ -6,7 +6,7 @@ use App\Filament\Resources\Boards\BoardResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
-
+// teste
 class EditBoard extends EditRecord
 {
     protected static string $resource = BoardResource::class;
