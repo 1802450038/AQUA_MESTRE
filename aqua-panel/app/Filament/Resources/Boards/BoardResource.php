@@ -60,15 +60,3 @@ class BoardResource extends Resource
     }
 }
 
-
-// {
-// “id” = “01”,
-// “name” = “nome da placa”,
-// “api_key” = “abcdefghijkl”,
-// “location” = “casa”,
-// “sensores” : {
-//  “ph” {
-//   }
-//  }
-// }
-

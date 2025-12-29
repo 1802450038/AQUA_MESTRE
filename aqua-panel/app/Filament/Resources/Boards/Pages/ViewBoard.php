@@ -49,7 +49,8 @@ class ViewBoard extends ViewRecord
 
                     // 3. Monta o array final
                     $dados = [
-                        'id' => $record->id,
+                        'server_url' => url('/api/boards/'),
+                        'id' => $record->id, // Ou use $record->uid se baseando na sua imagem
                         'name' => $record->name,
                         'api_key' => $apiKey,
                         'location' => $record->location, 
