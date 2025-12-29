@@ -14,7 +14,7 @@ class SensorMeasurementsChart extends ChartWidget
 
     public ?Sensor $record = null;
 
-    protected ?string $pollingInterval = '5s';
+    protected ?string $pollingInterval = '10s';
 
     protected int | string | array $columnSpan = 'full';
 
@@ -32,12 +32,12 @@ class SensorMeasurementsChart extends ChartWidget
         $isRawData = false;
 
         switch ($filter) {
-            case 'hour':
-                // Pega dados da última hora (ex: das 14:00 às 14:59 se agora for 14:30)
-                // Ou se preferir "últimos 60 minutos": Carbon::now()->subHour()
-                $query->where('created_at', '>=', Carbon::now()->subHour());
-                $isRawData = true; // Exibir cada ponto individualmente
-                break;
+            // case 'hour':
+            //     // Pega dados da última hora (ex: das 14:00 às 14:59 se agora for 14:30)
+            //     // Ou se preferir "últimos 60 minutos": Carbon::now()->subHour()
+            //     $query->where('created_at', '>=', Carbon::now()->subHour());
+            //     $isRawData = true; // Exibir cada ponto individualmente
+            //     break;
 
             case 'today':
                 $query->whereDate('created_at', Carbon::today());
@@ -83,7 +83,7 @@ class SensorMeasurementsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Valor da Leitura',
+                    'label' => 'Valor da Leitura em: ' . $this->record->unit,
                     'data' => $values,
                     'fill' => true,
                     'borderColor' => '#4ade80',
@@ -97,7 +97,7 @@ class SensorMeasurementsChart extends ChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'hour' => 'Última Hora',
+            // 'hour' => 'Última Hora',
             'today' => 'Hoje',
             'week' => 'Semana',
             'month' => 'Mês',

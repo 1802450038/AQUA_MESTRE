@@ -31,7 +31,7 @@ class ViewBoard extends ViewRecord
                     // 1. Formata os sensores para o formato "nome" : { dados }
                     $sensoresFormatados = $record->sensors->mapWithKeys(function ($sensor) {
                         return [
-                            $sensor->name => [
+                            $sensor->id => [
                                 'id' => $sensor->id,
                                 'type' => $sensor->type ?? 'genérico', 
                                 'port_number' => $sensor->port_number,

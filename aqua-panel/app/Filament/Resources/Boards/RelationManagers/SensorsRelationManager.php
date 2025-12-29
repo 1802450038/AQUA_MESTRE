@@ -142,6 +142,7 @@ class SensorsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
+            ->poll('10s')
             ->columns([
                 TextColumn::make('name')
                     ->label("Nome")

@@ -35,7 +35,7 @@ Route::prefix('boards')->group(function () {
     // localhost:8000/api/board/update-sensor-value
     Route::post('update-sensor-value', [BoardController::class, 'updateSensorValue']);
 
-
+    // localhost:8000/api/board/update-sensors-values
     Route::post('update-sensors-values', [BoardController::class, 'updateSensorsValues']);
 
     // localhost:8000/api/board/update-board-info?board_id={board_id}&api_key={api_key}
